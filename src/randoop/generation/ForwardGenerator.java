@@ -588,6 +588,10 @@ public class ForwardGenerator extends AbstractGenerator {
 			if (Log.isLoggingOn())
 				Log.logLine("components: " + l.size());
 
+			//========================================================================================
+			//TODO this point we can extend to generate new sequences of desired input types Jiajun 2016.4.5
+			//========================================================================================		
+
 			
 			// If we were not able to find (or create) any sequences of type
 			// inputTypes[i], and we are
@@ -693,6 +697,24 @@ public class ForwardGenerator extends AbstractGenerator {
 		return new InputsAndSuccessFlag(true, sequences, variables);
 	}
 
+	/**
+	 * this method is added by Jiajun 2016.04
+	 * randoop usually cannot find some object types of input that will be replaced by {@code null} value, which 
+	 * will greatly limited the defects revealing ability of randoop
+	 * 
+	 * This method is added to generate useful objects as parameter by calling some other methods that can yield
+	 * object needed
+	 * 
+	 * @param inputType
+	 * @return
+	 */
+	private SimpleList<Sequence> generateNewObjectInput(ConcreteType inputType){
+		SimpleList<Sequence> list = new ArrayListSimpleList<>();
+		//TODO
+		//TODO
+		return list;
+	}
+	
 
 	/**
 	 * Returns the set of sequences that are included in other sequences to
