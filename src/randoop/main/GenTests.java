@@ -30,6 +30,7 @@ import randoop.instrument.ExercisedClassVisitor;
 import randoop.mine.constant.ConstantMining;
 import randoop.mine.mapping.MethodRecord;
 import randoop.mine.mapping.MineMapping;
+import randoop.operation.CallableOperation;
 import randoop.operation.ConcreteOperation;
 import randoop.operation.Operation;
 import randoop.operation.OperationParseException;
@@ -127,10 +128,9 @@ public class GenTests extends GenInputsAbstract {
 		// collect all the methods and their return types
 		MineMapping.mineObjectMapping();
 
-		for(Entry<Class<?>, List<MethodRecord>> entry : GenInputsAbstract.generate_object_method_record.entrySet()){
+		for(Entry<ConcreteType, List<ConcreteOperation>> entry : GenInputsAbstract.generate_object_method_record.entrySet()){
 			System.out.println(entry.getKey()+" : "+entry.getValue());
 		}
-		
 		
 		Randomness.reset(randomseed);
 

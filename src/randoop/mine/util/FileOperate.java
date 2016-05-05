@@ -56,7 +56,6 @@ public class FileOperate {
         if(files==null)return resultFileName;
         for (File f : files) {
             if(f.isDirectory()){
-//                resultFileName.add(f.getPath());
                 ergodic(f,resultFileName);
             }else
             	if(f.getName().endsWith(".java")){

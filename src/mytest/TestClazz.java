@@ -8,12 +8,20 @@ public class TestClazz {
 		return a*b;
 	}
 	
+	public boolean setXXX(MyClazz clazz){
+		return true;
+	}
+	
 	public MyClazz createNewMyClazz(int a, double b){
 		return new MyClazz(a, b);
 	}
 	
-	public double compute(double a,double b){
-		return a*b;
+	public double[] compute(double a,double b){
+		return new double[]{a,b};
+	}
+	
+	public double[][] compute(double a){
+		return new double[][]{{a},{a}};
 	}
 	
 	class clazz2{

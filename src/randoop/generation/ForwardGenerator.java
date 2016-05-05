@@ -12,7 +12,9 @@ import randoop.Globals;
 import randoop.NormalExecution;
 import randoop.SubTypeSet;
 import randoop.main.GenInputsAbstract;
+import randoop.operation.CallableOperation;
 import randoop.operation.ConcreteOperation;
+import randoop.operation.ConstructorCall;
 import randoop.operation.Operation;
 import randoop.sequence.ExecutableSequence;
 import randoop.sequence.Sequence;
@@ -591,7 +593,7 @@ public class ForwardGenerator extends AbstractGenerator {
 			//========================================================================================
 			//TODO this point we can extend to generate new sequences of desired input types Jiajun 2016.4.5
 			//========================================================================================		
-
+			l = generateNewObjectInput(inputType);
 			
 			// If we were not able to find (or create) any sequences of type
 			// inputTypes[i], and we are
@@ -709,9 +711,37 @@ public class ForwardGenerator extends AbstractGenerator {
 	 * @return
 	 */
 	private SimpleList<Sequence> generateNewObjectInput(ConcreteType inputType){
-		SimpleList<Sequence> list = new ArrayListSimpleList<>();
-		//TODO
-		//TODO
+		ArrayListSimpleList<Sequence> list = new ArrayListSimpleList<>();
+		
+//		System.out.println("need generate new sequence for type : "+inputType);
+		
+		if(GenInputsAbstract.generate_object_method_record.containsKey(inputType)){
+//			System.out.println("find generate sequence for type >>>>>>> "+inputType);
+			List<ConcreteOperation> usedOperation = GenInputsAbstract.generate_object_method_record.get(inputType);
+			for (ConcreteOperation concreteOperation : usedOperation) {
+
+				InputsAndSuccessFlag sequences = selectInputs(concreteOperation);
+				if(!sequences.success){
+					System.out.println("Attempt to generate inputs failed : "+concreteOperation.getInputTypes());
+					continue;
+				}
+				System.out.println("------------------success-----------------");
+				Sequence concatSeq = Sequence.concatenate(sequences.sequences);
+				// Figure out input variables.
+				List<Variable> inputs = new ArrayList<>();
+				for (Integer oneinput : sequences.indices) {
+					Variable v = concatSeq.getVariable(oneinput);
+					inputs.add(v);
+				}
+
+				Sequence newSequence = concatSeq.extend(concreteOperation, inputs);
+				
+//				System.out.println(newSequence);
+				
+				list.add(newSequence);
+			}
+		}
+		
 		return list;
 	}
 	

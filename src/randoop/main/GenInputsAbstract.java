@@ -20,6 +20,9 @@ import plume.OptionGroup;
 import plume.Options;
 import plume.Unpublicized;
 import randoop.mine.mapping.MethodRecord;
+import randoop.operation.CallableOperation;
+import randoop.operation.ConcreteOperation;
+import randoop.types.ConcreteType;
 import randoop.util.Randomness;
 import randoop.util.Util;
 
@@ -109,7 +112,7 @@ public abstract class GenInputsAbstract extends CommandHandler {
 	 * this is used when a method under test cannot find input types 
 	 * we can utilize this record to generate them by invoking some other methods
 	 */
-	public static Map<Class<?>, List<MethodRecord> > generate_object_method_record = new HashMap<>();
+	public static Map<ConcreteType, List<ConcreteOperation> > generate_object_method_record = new HashMap<>();
 	
 	/**
 	 * File containing side-effect-free observer methods. These are used to
@@ -698,14 +701,13 @@ public abstract class GenInputsAbstract extends CommandHandler {
 		return elementSet;
 	}
 	
-	public static boolean addMethodRecord(MethodRecord methodRecord){
-		Class<?> returnType = methodRecord.getReturnType();
+	public static boolean addMethodRecord(ConcreteType returnType, ConcreteOperation operation){
 		if(generate_object_method_record.containsKey(returnType)){
-			List<MethodRecord> list = generate_object_method_record.get(returnType);
-			list.add(methodRecord);
+			List<ConcreteOperation> list = generate_object_method_record.get(returnType);
+			list.add(operation);
 		} else {
-			List<MethodRecord> list = new ArrayList<>();
-			list.add(methodRecord);
+			List<ConcreteOperation> list = new ArrayList<>();
+			list.add(operation);
 			generate_object_method_record.put(returnType, list);
 		}
 		return true;
