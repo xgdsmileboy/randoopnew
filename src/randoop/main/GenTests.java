@@ -19,6 +19,7 @@ import randoop.DummyVisitor;
 import randoop.ExecutionVisitor;
 import randoop.JunitFileWriter;
 import randoop.MultiVisitor;
+import randoop.constant.ConstantMining;
 import randoop.contract.ObjectContract;
 import randoop.generation.AbstractGenerator;
 import randoop.generation.ComponentManager;
@@ -221,6 +222,13 @@ public class GenTests extends GenInputsAbstract {
 		Set<Sequence> components = new LinkedHashSet<>();
 		components.addAll(SeedSequences.defaultSeeds());
 		components.addAll(operationModel.getAnnotatedTestValues());
+		
+
+		ConstantMining constantMining = new ConstantMining(testClassPath);
+	    Set list = constantMining.getSeedsSet();
+	    System.out.println(list);
+	    components.addAll(SeedSequences.objectsToSeeds(new ArrayList(list)));		
+		
 		
 		ComponentManager componentMgr = new ComponentManager(components);
 		operationModel.addClassLiterals(componentMgr, GenInputsAbstract.literals_file,
