@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
@@ -19,7 +20,6 @@ import randoop.DummyVisitor;
 import randoop.ExecutionVisitor;
 import randoop.JunitFileWriter;
 import randoop.MultiVisitor;
-import randoop.constant.ConstantMining;
 import randoop.contract.ObjectContract;
 import randoop.generation.AbstractGenerator;
 import randoop.generation.ComponentManager;
@@ -27,6 +27,9 @@ import randoop.generation.ForwardGenerator;
 import randoop.generation.RandoopListenerManager;
 import randoop.generation.SeedSequences;
 import randoop.instrument.ExercisedClassVisitor;
+import randoop.mine.constant.ConstantMining;
+import randoop.mine.mapping.MethodRecord;
+import randoop.mine.mapping.MineMapping;
 import randoop.operation.ConcreteOperation;
 import randoop.operation.Operation;
 import randoop.operation.OperationParseException;
@@ -87,8 +90,6 @@ public class GenTests extends GenInputsAbstract {
 			+ " --testclass=java.util.TreeSet";
 
 	private static final List<String> notes;
-
-	private String testClassPath = null;
 	
 	static {
 		notes = new ArrayList<>();
@@ -113,10 +114,6 @@ public class GenTests extends GenInputsAbstract {
 	@Override
 	public boolean handle(String[] args) throws RandoopTextuiException {
 
-	    if(args[0].contains("--testclass=")){
-	        testClassPath = "src."+args[0].substring(args[0].indexOf("=")+1);
-	      }
-		
 		try {
 			String[] nonargs = options.parse(args);
 			if (nonargs.length > 0)
@@ -126,7 +123,15 @@ public class GenTests extends GenInputsAbstract {
 		}
 
 		checkOptionsValid();
+		
+		// collect all the methods and their return types
+		MineMapping.mineObjectMapping();
 
+		for(Entry<Class<?>, List<MethodRecord>> entry : GenInputsAbstract.generate_object_method_record.entrySet()){
+			System.out.println(entry.getKey()+" : "+entry.getValue());
+		}
+		
+		
 		Randomness.reset(randomseed);
 
 		java.security.Policy policy = java.security.Policy.getPolicy();
@@ -224,10 +229,10 @@ public class GenTests extends GenInputsAbstract {
 		components.addAll(operationModel.getAnnotatedTestValues());
 		
 
-		ConstantMining constantMining = new ConstantMining(testClassPath);
-	    Set list = constantMining.getSeedsSet();
-	    System.out.println(list);
-	    components.addAll(SeedSequences.objectsToSeeds(new ArrayList(list)));		
+//		ConstantMining constantMining = new ConstantMining(GenInputsAbstract.generate_object_file_Path);
+//	    Set list = constantMining.getSeedsSet();
+//	    System.out.println(list);
+//	    components.addAll(SeedSequences.objectsToSeeds(new ArrayList(list)));		
 		
 		
 		ComponentManager componentMgr = new ComponentManager(components);

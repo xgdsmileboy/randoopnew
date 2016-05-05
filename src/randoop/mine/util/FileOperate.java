@@ -1,51 +1,19 @@
-package randoop.constant;
+package randoop.mine.util;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.ArrayList;
+import java.nio.file.Path;
 import java.util.List;
-import java.util.Set;
 
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTParser;
-import org.eclipse.jdt.core.dom.CompilationUnit;
-
-public class ConstantMining {
-    private ConstantVisitor constantVisitor;
-    
-    public ConstantMining(String path){
-      
-  //    String path = "/Users/Jiajun/Code/Java/grt/randoop/src/mytest/DummyClass.java";
-      CompilationUnit cu = parse(readFileToString(path));
-      
-      constantVisitor = new ConstantVisitor();
-      
-      cu.accept(constantVisitor);
-      
-      
-    }
-    
-    public Set getSeedsSet(){
-      return constantVisitor.getConstantsList();
-    }
-    
-    private CompilationUnit parse(String str) {
-      ASTParser parser = ASTParser.newParser(AST.JLS3);
-      parser.setSource(str.toCharArray());
-      parser.setKind(ASTParser.K_COMPILATION_UNIT);
-   
-      CompilationUnit cu = (CompilationUnit) parser.createAST(null);
-      
-      return cu;
-    }
-    
-   
+public class FileOperate {
+	
     //read file content into a string
-    private String readFileToString(String filePath){
+    public static String readFileToString(String filePath){
       
       if(null == filePath){
-        System.out.println("ConstantMining @47 test file path: "+filePath);
+        System.out.println("FileOperate @12 test file path: "+filePath);
         System.exit(1);
       }
       
@@ -82,4 +50,20 @@ public class ConstantMining {
       return  fileData.toString();  
     }
     
+	public static List<String> ergodic(File file,List<String> resultFileName){
+		
+        File[] files = file.listFiles();
+        if(files==null)return resultFileName;
+        for (File f : files) {
+            if(f.isDirectory()){
+//                resultFileName.add(f.getPath());
+                ergodic(f,resultFileName);
+            }else
+            	if(f.getName().endsWith(".java")){
+            		String path = f.getPath();
+            		resultFileName.add(path.substring(path.indexOf("src/")+"src/".length(), path.indexOf(".java")).replace("/", "."));
+            	}
+        }
+        return resultFileName;
+    }
 }

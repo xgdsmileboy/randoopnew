@@ -3,19 +3,23 @@ package randoop.main;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.eclipse.osgi.framework.adaptor.FilePath;
+
 import plume.EntryReader;
 import plume.Option;
 import plume.OptionGroup;
 import plume.Options;
 import plume.Unpublicized;
-
+import randoop.mine.mapping.MethodRecord;
 import randoop.util.Randomness;
 import randoop.util.Util;
 
@@ -90,6 +94,23 @@ public abstract class GenInputsAbstract extends CommandHandler {
 	@Option("File that lists methods under test")
 	public static File methodlist = null;
 
+	
+	/**
+	 * this is the file path for mining the mappings from class to its generating methods
+	 * added Jiajun 2016.5.5
+	 * used by {@code generate_object_method_record}
+	 */
+	@Option("file path that used to mine object generating class")
+	public static String generate_object_file_Path = null;
+	
+	/**
+	 * mapping class to methods that can generate specific class object
+	 * record methods that can generate needed objects, Jiajun 2016.5.5
+	 * this is used when a method under test cannot find input types 
+	 * we can utilize this record to generate them by invoking some other methods
+	 */
+	public static Map<Class<?>, List<MethodRecord> > generate_object_method_record = new HashMap<>();
+	
 	/**
 	 * File containing side-effect-free observer methods. These are used to
 	 * create regression assertions, and to prune tests.
@@ -676,4 +697,18 @@ public abstract class GenInputsAbstract extends CommandHandler {
 		}
 		return elementSet;
 	}
+	
+	public static boolean addMethodRecord(MethodRecord methodRecord){
+		Class<?> returnType = methodRecord.getReturnType();
+		if(generate_object_method_record.containsKey(returnType)){
+			List<MethodRecord> list = generate_object_method_record.get(returnType);
+			list.add(methodRecord);
+		} else {
+			List<MethodRecord> list = new ArrayList<>();
+			list.add(methodRecord);
+			generate_object_method_record.put(returnType, list);
+		}
+		return true;
+	}
+	
 }

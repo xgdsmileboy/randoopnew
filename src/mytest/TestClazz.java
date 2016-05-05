@@ -16,4 +16,11 @@ public class TestClazz {
 		return a*b;
 	}
 	
+	class clazz2{
+		
+	}
+}
+
+class Clazz1{
+	
 }

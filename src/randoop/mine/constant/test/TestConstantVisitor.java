@@ -1,4 +1,4 @@
-package randoop.constant.test;
+package randoop.mine.constant.test;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -8,7 +8,7 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
-import randoop.constant.ConstantVisitor;
+import randoop.mine.constant.ConstantVisitor;
 
 public class TestConstantVisitor {
 
